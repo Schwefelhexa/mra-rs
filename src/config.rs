@@ -5,7 +5,7 @@ use serde::Deserialize;
 
 #[derive(Config, Debug)]
 pub struct Conf {
-    pairs: HashMap<String, MraPair>
+    pub pairs: HashMap<String, MraPair>
 }
 
 #[derive(Debug, Deserialize)]

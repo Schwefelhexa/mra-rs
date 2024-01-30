@@ -1,6 +1,7 @@
 use clap::Parser;
-use cli::Cli;
+use cli::{Cli, Command};
 use confique::Config;
+use itertools::Itertools;
 
 use crate::config::Conf;
 
@@ -16,5 +17,22 @@ fn main() {
     }
     let config = config.load().unwrap();
 
-    println!("{:#?}", config);
+    match args.command {
+        Command::Pull(cmd) => {
+            let invalid_pairs = cmd
+                .pairs
+                .iter()
+                .filter(|pair| !config.pairs.contains_key(*pair))
+                .collect::<Vec<_>>();
+            if !invalid_pairs.is_empty() {
+                println!("Invalid pairs: {}", invalid_pairs.iter().join(", "));
+                return;
+            }
+
+            println!("Pulling emails from source(s) to destination(s).");
+
+            println!("{:#?}", cmd);
+            println!("{:#?}", config);
+        }
+    }
 }
