@@ -1,3 +1,5 @@
+use maildir::Maildir;
+
 use crate::config::{ImapSource, MaildirDestination, MraDestination, MraSource};
 
 pub trait Source {
@@ -29,26 +31,28 @@ John"
 }
 
 pub trait Destination {
-    fn push(&self, mail: &str);
+    fn push(&self, mails: Vec<&str>);
 }
 impl Destination for MraDestination {
-    fn push(&self, mail: &str) {
+    fn push(&self, mails: Vec<&str>) {
         match self {
-            MraDestination::Maildir(destination) => destination.push(mail),
+            MraDestination::Maildir(destination) => destination.push(mails),
         }
     }
 }
 impl Destination for MaildirDestination {
-    fn push(&self, mail: &str) {
-        println!("Pushing email to Maildir at {}\n", self.path);
-        println!("{}\n\n", mail);
+    fn push(&self, mails: Vec<&str>) {
+        let maildir = Maildir::from(self.path.clone());
+        maildir.create_dirs().unwrap();
+
+        for mail in mails {
+            maildir.store_new(mail.as_bytes()).unwrap();
+        }
     }
 }
 
 pub fn pull<S: Source, D: Destination>(source: &S, destination: &D) {
     let mails = source.pull();
 
-    for mail in mails {
-        destination.push(&mail);
-    }
+    destination.push(mails.iter().map(|mail| mail.as_str()).collect());
 }

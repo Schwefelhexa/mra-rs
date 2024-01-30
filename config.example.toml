@@ -7,5 +7,5 @@ password = "test"
 
 [pairs.personal.destination]
 type = "maildir"
-path = "~/Maildir/personal"
+path = "./Maildir/personal"  # TODO: support ~
 

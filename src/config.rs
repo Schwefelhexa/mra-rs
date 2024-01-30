@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, path::PathBuf};
 
 use confique::Config;
 use serde::Deserialize;
@@ -38,5 +38,5 @@ pub struct ImapSource {
 
 #[derive(Debug, Deserialize)]
 pub struct MaildirDestination {
-    pub path: String,
+    pub path: PathBuf,
 }
