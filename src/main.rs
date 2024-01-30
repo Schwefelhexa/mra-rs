@@ -1,15 +1,20 @@
+use clap::Parser;
+use cli::Cli;
 use confique::Config;
 
 use crate::config::Conf;
 
+mod cli;
 mod config;
 
 fn main() {
-    let config = Conf::builder()
-        .env()
-        .file(std::env::current_dir().unwrap().join("config.example.toml"))
-        .load()
-        .unwrap();
+    let args = Cli::parse();
+
+    let mut config = Conf::builder().env();
+    for path in args.config {
+        config = config.file(path);
+    }
+    let config = config.load().unwrap();
 
     println!("{:#?}", config);
 }
