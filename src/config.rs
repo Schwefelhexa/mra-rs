@@ -10,8 +10,8 @@ pub struct Conf {
 
 #[derive(Debug, Deserialize)]
 pub struct MraPair {
-    source: MraSource,
-    destination: MraDestination,
+    pub source: MraSource,
+    pub destination: MraDestination,
 }
 
 #[derive(Debug, Deserialize)]
@@ -38,5 +38,5 @@ pub struct ImapSource {
 
 #[derive(Debug, Deserialize)]
 pub struct MaildirDestination {
-    path: String,
+    pub path: String,
 }

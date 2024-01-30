@@ -7,6 +7,7 @@ use crate::config::Conf;
 
 mod cli;
 mod config;
+mod mra;
 
 fn main() {
     let args = Cli::parse();
@@ -29,10 +30,17 @@ fn main() {
                 return;
             }
 
-            println!("Pulling emails from source(s) to destination(s).");
+            let pairs = if cmd.pairs.is_empty() {
+                config.pairs.keys().cloned().collect()
+            } else {
+                cmd.pairs
+            };
 
-            println!("{:#?}", cmd);
-            println!("{:#?}", config);
+            for pair in pairs {
+                let config_pair = &config.pairs[&pair];
+
+                mra::pull(&config_pair.source, &config_pair.destination);
+            }
         }
     }
 }
