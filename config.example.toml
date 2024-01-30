@@ -1,0 +1,11 @@
+[pairs.personal.source]
+type = "imap"
+host = "imap.gmail.com"
+port = 993
+username = "test"
+password = "test"
+
+[pairs.personal.destination]
+type = "maildir"
+path = "~/Maildir/personal"
+
