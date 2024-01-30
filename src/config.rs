@@ -30,10 +30,10 @@ pub enum MraDestination {
 
 #[derive(Debug, Deserialize)]
 pub struct ImapSource {
-    host: String,
-    port: u16,
-    username: String,
-    password: String,
+    pub host: String,
+    pub port: u16,
+    pub username: String,
+    pub password: String,
 }
 
 #[derive(Debug, Deserialize)]

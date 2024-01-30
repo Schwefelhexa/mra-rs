@@ -1,4 +1,6 @@
+use itertools::Itertools;
 use maildir::Maildir;
+use native_tls::TlsConnector;
 
 use crate::config::{ImapSource, MaildirDestination, MraDestination, MraSource};
 
@@ -15,18 +17,23 @@ impl Source for MraSource {
 }
 impl Source for ImapSource {
     fn pull(&self) -> Vec<String> {
-        vec!["Date: Mon, 30 Jan 2024 12:34:56 +0000
-From: John Doe <john.doe@example.com>
-To: Jane Smith <jane.smith@example.net>
-Subject: Hello, Jane!
+        let tls = TlsConnector::new().unwrap();
+        let mut session = imap::connect((self.host.as_str(), self.port), self.host.as_str(), &tls)
+            .unwrap()
+            .login(self.username.as_str(), self.password.as_str())
+            .unwrap();
 
-Hi Jane,
+        session.select("INBOX").unwrap();
+        let unread_message_ids = session.search("UNSEEN").unwrap().iter().join(" ");
+        let unread_messages = session
+            .fetch(&unread_message_ids, "RFC822")
+            .unwrap()
+            .iter()
+            .map(|message| message.body().unwrap())
+            .map(|body| String::from_utf8(body.to_vec()).unwrap())
+            .collect();
 
-I hope this email finds you well. Just wanted to say hello and see how you're doing.
-
-Best regards,
-John"
-            .into()]
+        unread_messages
     }
 }
 
