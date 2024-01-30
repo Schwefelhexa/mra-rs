@@ -1,0 +1,13 @@
+[package]
+name = "mra-rs"
+description = "A stupidly simple mail retrieval agent"
+authors = ["Alexander Baron <alexander@baron-online.eu>"]
+license = "MIT"
+repository = "https://github.com/Schwefelhexa/mra-rs"
+homepage = "https://github.com/Schwefelhexa/mra-rs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
