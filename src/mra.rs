@@ -25,7 +25,8 @@ impl Source for ImapSource {
                 .unwrap();
 
         session.select("INBOX").unwrap();
-        let unread_message_ids = session.search("UNSEEN").unwrap().iter().join(" ");
+        let unread_message_ids = session.search("UNSEEN").unwrap().iter().join(",");
+        println!("Unread message IDs: {}", unread_message_ids);
         let unread_messages = session
             .fetch(&unread_message_ids, "RFC822")
             .unwrap()
