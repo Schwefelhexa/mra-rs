@@ -88,5 +88,11 @@ impl ImapSource {
 
 #[derive(Debug, Deserialize)]
 pub struct MaildirDestination {
-    pub path: PathBuf,
+    path: String,
+}
+impl MaildirDestination {
+    pub fn path(&self) -> PathBuf {
+        let string = shellexpand::full(&self.path).unwrap_or(self.path.clone().into());
+        string.into_owned().into()
+    }
 }

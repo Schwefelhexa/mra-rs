@@ -50,7 +50,7 @@ impl Destination for MraDestination {
 }
 impl Destination for MaildirDestination {
     fn push(&self, mails: Vec<&str>) {
-        let maildir = Maildir::from(self.path.clone());
+        let maildir = Maildir::from(self.path());
         maildir.create_dirs().unwrap();
 
         for mail in mails {

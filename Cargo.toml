@@ -19,3 +19,4 @@ itertools = "0.12.1"
 maildir = "0.6.4"
 native-tls = "0.2.11"
 serde = { version = "1.0.196", features = ["derive"] }
+shellexpand = "3.1.0"

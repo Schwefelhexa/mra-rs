@@ -7,5 +7,5 @@ password_cmd = "op item get \"Personal Mail\" --fields password"
 
 [pairs.personal.destination]
 type = "maildir"
-path = "./Maildir/personal"  # TODO: support ~
+path = "~/Mail/personal"
 
