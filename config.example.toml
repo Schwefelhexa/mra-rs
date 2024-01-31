@@ -1,6 +1,6 @@
 [pairs.personal.source]
 type = "imap"
-host = "imap.gmail.com"
+host_cmd = "op item get \"Personal Mail\" --fields host"
 port = 993
 username = "test"
 password = "test"

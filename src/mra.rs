@@ -18,10 +18,11 @@ impl Source for MraSource {
 impl Source for ImapSource {
     fn pull(&self) -> Vec<String> {
         let tls = TlsConnector::new().unwrap();
-        let mut session = imap::connect((self.host.as_str(), self.port), self.host.as_str(), &tls)
-            .unwrap()
-            .login(self.username.as_str(), self.password.as_str())
-            .unwrap();
+        let mut session =
+            imap::connect((self.host(), *self.port()), self.host(), &tls)
+                .unwrap()
+                .login(self.username.as_str(), self.password.as_str())
+                .unwrap();
 
         session.select("INBOX").unwrap();
         let unread_message_ids = session.search("UNSEEN").unwrap().iter().join(" ");
