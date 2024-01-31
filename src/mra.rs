@@ -21,7 +21,7 @@ impl Source for ImapSource {
         let mut session =
             imap::connect((self.host(), *self.port()), self.host(), &tls)
                 .unwrap()
-                .login(self.username.as_str(), self.password.as_str())
+                .login(self.username(), self.password())
                 .unwrap();
 
         session.select("INBOX").unwrap();

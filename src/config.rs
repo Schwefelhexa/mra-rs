@@ -29,38 +29,61 @@ pub enum MraDestination {
     Maildir(MaildirDestination),
 }
 
-#[derive(Debug, Deserialize)]
-enum OptionalHost {
-    #[serde(rename = "host")]
-    Raw(String),
-    #[serde(rename = "host_cmd")]
-    FromCommand(String),
+macro_rules! cmd {
+    ($id:ident, $name:expr, $name_cmd:expr) => {
+        #[derive(Debug, Deserialize)]
+        enum $id {
+            #[serde(rename = $name)]
+            Raw(String),
+            #[serde(rename = $name_cmd)]
+            FromCommand(String),
+        }
+        impl $id {
+            pub fn eval(&self) -> String {
+                match self {
+                    $id::Raw(v) => v.clone(),
+                    $id::FromCommand(cmd) => {
+                        let result = Command::new("sh")
+                            .arg("-c")
+                            .arg(cmd)
+                            .output()
+                            .unwrap()
+                            .stdout;
+                        String::from_utf8(result).unwrap().trim().to_owned()
+                    }
+                }
+            }
+        }
+    };
 }
+
+macro_rules! get_cmd {
+    ($enum:ident, $field:ident) => {
+        pub fn $field(&self) -> String {
+            self.$field.eval()
+        }
+    };
+}
+
+cmd!(Host, "host", "host_cmd");
+cmd!(Username, "username", "username_cmd");
+cmd!(Password, "password", "password_cmd");
 
 #[derive(Debug, Deserialize, Getters)]
 pub struct ImapSource {
     #[serde(flatten)]
-    host: OptionalHost,
+    host: Host,
     #[getset(get = "pub")]
     port: u16,
-    pub username: String,
-    pub password: String,
+    #[serde(flatten)]
+    username: Username,
+    #[serde(flatten)]
+    password: Password,
 }
 impl ImapSource {
-    pub fn host(&self) -> String {
-        match &self.host {
-            OptionalHost::Raw(v) => v.clone(),
-            OptionalHost::FromCommand(cmd) => {
-                let result = Command::new("sh")
-                    .arg("-c")
-                    .arg(cmd)
-                    .output()
-                    .unwrap()
-                    .stdout;
-                String::from_utf8(result).unwrap().trim().to_owned()
-            }
-        }
-    }
+    get_cmd!(Host, host);
+    get_cmd!(Username, username);
+    get_cmd!(Password, password);
 }
 
 #[derive(Debug, Deserialize)]

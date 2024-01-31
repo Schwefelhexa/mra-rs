@@ -2,8 +2,8 @@
 type = "imap"
 host_cmd = "op item get \"Personal Mail\" --fields host"
 port = 993
-username = "test"
-password = "test"
+username_cmd = "op item get \"Personal Mail\" --fields username"
+password_cmd = "op item get \"Personal Mail\" --fields password"
 
 [pairs.personal.destination]
 type = "maildir"
