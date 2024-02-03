@@ -46,8 +46,14 @@ macro_rules! cmd {
                         let result = Command::new("sh")
                             .arg("-c")
                             .arg(cmd)
-                            .output()?
-                            .stdout;
+                            .output()?;
+                        if !result.status.success() {
+                            return Err(color_eyre::eyre::eyre!(
+                                "Command failed:\n{}",
+                                String::from_utf8(result.stderr)?
+                            ));
+                        }
+                        let result = result.stdout;
                         Ok(String::from_utf8(result)?.trim().to_owned())
                     }
                 }
