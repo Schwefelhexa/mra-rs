@@ -1,5 +1,6 @@
 use clap::Parser;
 use cli::{Cli, Command};
+use color_eyre::eyre::Result;
 use confique::Config;
 use itertools::Itertools;
 
@@ -9,14 +10,14 @@ mod cli;
 mod config;
 mod mra;
 
-fn main() {
+fn main() -> Result<()> {
     let args = Cli::parse();
 
     let mut config = Conf::builder().env();
     for path in args.config {
         config = config.file(path);
     }
-    let config = config.load().unwrap();
+    let config = config.load()?;
 
     match args.command {
         Command::Pull(cmd) => {
@@ -27,7 +28,7 @@ fn main() {
                 .collect::<Vec<_>>();
             if !invalid_pairs.is_empty() {
                 println!("Invalid pairs: {}", invalid_pairs.iter().join(", "));
-                return;
+                return Ok(());
             }
 
             let pairs = if cmd.pairs.is_empty() {
@@ -39,8 +40,10 @@ fn main() {
             for pair in pairs {
                 let config_pair = &config.pairs[&pair];
 
-                mra::pull(&config_pair.source, &config_pair.destination);
+                mra::pull(&config_pair.source, &config_pair.destination)?;
             }
         }
     }
+
+    Ok(())
 }

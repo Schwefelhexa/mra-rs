@@ -92,7 +92,7 @@ pub struct MaildirDestination {
 }
 impl MaildirDestination {
     pub fn path(&self) -> PathBuf {
-        let string = shellexpand::full(&self.path).unwrap_or(self.path.clone().into());
+        let string = shellexpand::full(&self.path).unwrap_or_else(|_| self.path.clone().into());
         string.into_owned().into()
     }
 }
