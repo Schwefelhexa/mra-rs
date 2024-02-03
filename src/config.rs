@@ -39,17 +39,16 @@ macro_rules! cmd {
             FromCommand(String),
         }
         impl $id {
-            pub fn eval(&self) -> String {
+            pub fn eval(&self) -> color_eyre::eyre::Result<String> {
                 match self {
-                    $id::Raw(v) => v.clone(),
+                    $id::Raw(v) => Ok(v.clone()),
                     $id::FromCommand(cmd) => {
                         let result = Command::new("sh")
                             .arg("-c")
                             .arg(cmd)
-                            .output()
-                            .unwrap()
+                            .output()?
                             .stdout;
-                        String::from_utf8(result).unwrap().trim().to_owned()
+                        Ok(String::from_utf8(result)?.trim().to_owned())
                     }
                 }
             }
@@ -59,7 +58,7 @@ macro_rules! cmd {
 
 macro_rules! get_cmd {
     ($enum:ident, $field:ident) => {
-        pub fn $field(&self) -> String {
+        pub fn $field(&self) -> color_eyre::eyre::Result<String> {
             self.$field.eval()
         }
     };

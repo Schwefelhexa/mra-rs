@@ -19,8 +19,8 @@ impl Source for MraSource {
 impl Source for ImapSource {
     fn pull(&self) -> Result<Vec<String>> {
         let tls = TlsConnector::new()?;
-        let mut session = imap::connect((self.host(), *self.port()), self.host(), &tls)?
-            .login(self.username(), self.password())
+        let mut session = imap::connect((self.host()?, *self.port()), self.host()?, &tls)?
+            .login(self.username()?, self.password()?)
             .map_err(|e| e.0)?;
 
         session.select("INBOX")?;
